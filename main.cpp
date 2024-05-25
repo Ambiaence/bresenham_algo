@@ -14,7 +14,12 @@ class BinaryMap {
 		}
 
 		int index_from_column_and_row(int column, int row) {
-			return column * this->width + row;
+			return column + row * this->width;
+		}
+
+		void write_unsafe(int column, int row, bool value) {
+			int index = this->index_from_column_and_row(column,row);
+			this->start_of_binary_map[index] = value;
 		}
 
 		bool* start_of_binary_map;
@@ -23,7 +28,7 @@ class BinaryMap {
 		int width;
 
 	public:
-		BinaryMap(int height, int width) {
+		BinaryMap(int width, int height) {
 
 			this->height = height;
 			this->width = width;
@@ -50,11 +55,63 @@ class BinaryMap {
 			int index = this->index_from_column_and_row(column,row);
 			this->start_of_binary_map[index] = value;
 		}
+
+		void print() {
+			for(int i = 0; i < this->map_size; i++) {
+				bool is_divisible = (i % width) == 0;
+				if (is_divisible) {
+					std::cout << "\n";
+				}
+				std::cout << this->start_of_binary_map[i];
+			}
+			std::cout << '\n';
+		}
+		
+		void check_case_one(int x0, int y0, int x1, int y1) {
+			this->check_bounds(x0, y0);
+			this->check_bounds(x1, y1);
+
+			if (x0 > x1) {
+				throw std::invalid_argument("x0 > x1");
+			}		
+
+			if (y0 > y1) {
+				throw std::invalid_argument("y0 > y1");
+			}		
+
+			int width = x1 - x0;
+			int height = y1 - y0;
+			
+			if (height > width) {
+				throw std::invalid_argument("height > width");
+			}		
+		}
+		
+		void draw_case_one(int x0, int y0, int x1, int y1) {
+			this->check_case_one(x0, y0, x1, y1);
+
+			int delta_x = (x1-x0);
+			int delta_y = (y1-y0);
+			int row = y0;
+			int epsilon_flat = delta_x-delta_y;
+
+			for (int column = x0; column < x1; column++) {
+				this->write_unsafe(column, row, 1); //It can be "unsafe" because bounds are already checked.
+
+				if( epsilon_flat >= 0) {
+					row+=1;
+					epsilon_flat+=1;
+				}
+				epsilon_flat += delta_y;
+			}
+		}	
 };
 
 int main() {
-	auto map = BinaryMap(5,4);
-	map.write(1,3,1);
-	std::cout << map.read(1,3) << '\n';
-
+	auto map = BinaryMap(5,5);
+	map.print();
+	map.write(0,0,1);
+	map.write(4,0,1);
+	map.write(4,4,1);
+	map.print();
 }
