@@ -62,6 +62,7 @@ class BinaryMap {
 				if (is_divisible) {
 					std::cout << "\n";
 				}
+
 				std::cout << this->start_of_binary_map[i];
 			}
 			std::cout << '\n';
@@ -93,14 +94,15 @@ class BinaryMap {
 			int delta_x = (x1-x0);
 			int delta_y = (y1-y0);
 			int row = y0;
-			int epsilon_flat = delta_x-delta_y;
+			int epsilon_flat = delta_y-delta_x;
+			std::cout << epsilon_flat << '\n';
 
-			for (int column = x0; column < x1; column++) {
+			for (int column = x0; column <= x1; column++) {
 				this->write_unsafe(column, row, 1); //It can be "unsafe" because bounds are already checked.
 
 				if( epsilon_flat >= 0) {
 					row+=1;
-					epsilon_flat+=1;
+					epsilon_flat-=delta_x;
 				}
 				epsilon_flat += delta_y;
 			}
@@ -108,10 +110,8 @@ class BinaryMap {
 };
 
 int main() {
-	auto map = BinaryMap(5,5);
+	auto map = BinaryMap(20,20);
 	map.print();
-	map.write(0,0,1);
-	map.write(4,0,1);
-	map.write(4,4,1);
+	map.draw_case_one(0,0, 15,3);
 	map.print();
 }
