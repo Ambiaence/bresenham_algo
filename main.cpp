@@ -90,6 +90,7 @@ class BinaryMap {
 		}
 		
 		void draw_increment_drive_x(int x0, int y0, int x1, int y1) {
+		std::cout << "Why?\n";
 			this->check_case_one(x0, y0, x1, y1);
 
 			int delta_x = (x1-x0);
@@ -166,6 +167,71 @@ class BinaryMap {
 				epsilon_flat += delta_y;
 			}
 		}	
+		
+		void drive_x(int x0, int y0, int x1, int y1) {
+			int left_x;
+			int right_x;
+			int left_y;
+			int right_y;
+
+			if (x0 > x1) {
+				left_x = x1;	
+				right_x = x0;	
+				left_y = y1;	
+				right_y = y0;	
+
+			} else {
+				left_x = x0;	
+				right_x = x1;	
+				left_y = y0;	
+				right_y = y1;	
+			}
+			
+			if (left_y > right_y) {
+				draw_decrement_drive_x(left_x, left_y, right_x, right_y);
+			} else {
+				draw_increment_drive_x(left_x, left_y, right_x, right_y);
+			}
+		}
+
+		void drive_y(int x0, int y0, int x1, int y1) {
+			int left_x;
+			int right_x;
+			int left_y;
+			int right_y;
+
+			if (x0 > x1) {
+				left_x = x1;	
+				right_x = x0;	
+				left_y = y1;	
+				right_y = y0;	
+			} else {
+				left_x = x0;	
+				right_x = x1;	
+				left_y = y0;	
+				right_y = y1;	
+			}
+
+			if (left_y > right_y) {
+				std::cout << "l > r\n";
+				draw_decrement_drive_y(left_x, left_y, right_x, right_y);
+			} else {
+				std::cout << "r > l\n";
+				draw_increment_drive_y(left_x, left_y, right_x, right_y);
+			}
+		}
+		
+
+		void draw_general(int x0, int y0, int x1, int y1) {
+			int delta_x = abs(x0-x1);
+			int delta_y = abs(y0-y1);
+
+			if (delta_y > delta_x) {
+				drive_y(x0, y0 ,x1 ,y1);
+			} else {
+				drive_x(x0, y0, x1, y1);
+			}
+		}
 
 		//void draw_all_cases(int x0, int y0, int x1, int y1) {
 		//	int delta_x = x1-x0;
@@ -179,8 +245,7 @@ class BinaryMap {
 
 int main() {
 	auto map = BinaryMap(20,20);
-	//map.draw_increment_drive_x(3,0,10,3);
-	//map.draw_increment_drive_y(0,0,10,15);
-	map.draw_decrement_drive_x(0,3,19,0);
+	map.draw_general(0,0,5,10);
+	map.draw_general(0,10,5,0);
 	map.print();
 }
