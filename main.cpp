@@ -108,24 +108,6 @@ class BinaryMap {
 			}
 		}	
 
-		void draw_decrement_drive_x(int x0, int y0, int x1, int y1) {
-			this->check_case_one(x0, y0, x1, y1);
-
-			int delta_x = (x1-x0);
-			int delta_y = (y1-y0);
-			int row = y0;
-			int epsilon_flat = delta_y-delta_x;
-
-			for (int column = x0; column <= x1; column++) {
-				this->write_unsafe(column, row, 1); //It can be "unsafe" because bounds are already checked.
-
-				if( epsilon_flat >= 0) {
-					row-=1;
-					epsilon_flat-=delta_x;
-				}
-				epsilon_flat += delta_y;
-			}
-		}	
 
 		void draw_increment_drive_y(int x0, int y0, int x1, int y1) {
 			int delta_x = (x1-x0);
@@ -153,12 +135,9 @@ class BinaryMap {
 			int epsilon_flat = delta_x-delta_y;
 
 
-			std::cout << "e_" << epsilon_flat  << "\n";
 
 			for (int row = y0; row >= y1; row--) {
 				this->write_unsafe(column, row, 1); //It can be "unsafe" because bounds are already checked.
-
-				std::cout << '\t' << "e_" << epsilon_flat  << "\n";
 
 				if (epsilon_flat >= 0) {
 					column+=1;
@@ -166,6 +145,25 @@ class BinaryMap {
 				}
 
 				epsilon_flat += delta_x;
+			}
+		}	
+
+		void draw_decrement_drive_x(int x0, int y0, int x1, int y1) {
+			int delta_x = abs(x1-x0); 
+			int delta_y = abs(y1-y0);  
+
+			int row = y0;
+			int epsilon_flat = delta_y-delta_x;
+
+			for (int column = x0; column <= x1; column++) {
+				this->write_unsafe(column, row, 1); //It can be "unsafe" because bounds are already checked.
+
+				if (epsilon_flat >= 0) {
+					row-=1;
+					epsilon_flat-=delta_x;
+				}
+
+				epsilon_flat += delta_y;
 			}
 		}	
 
@@ -183,8 +181,6 @@ int main() {
 	auto map = BinaryMap(20,20);
 	//map.draw_increment_drive_x(3,0,10,3);
 	//map.draw_increment_drive_y(0,0,10,15);
-	map.draw_decrement_drive_y(0,19,3,0);
-	map.draw_decrement_drive_y(0,19,7,0);
-	map.draw_decrement_drive_y(0,19,11,0);
+	map.draw_decrement_drive_x(0,3,19,0);
 	map.print();
 }
