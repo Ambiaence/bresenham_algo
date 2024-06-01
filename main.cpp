@@ -1,6 +1,8 @@
 #include <iostream>
+#include <string>
 #include <cmath>
 #include <stdexcept>
+#include <stdio.h>
 
 class BinaryMap {
 	private:
@@ -148,6 +150,25 @@ class BinaryMap {
 			}
 		}	
 
+		int write_to_pgm() {
+			std::cout << "P2\n";
+			std::cout << "#Comment\n";
+			std::cout << this->height << ' ' << this->width << '\n';
+			std::cout << "255\n";
+			for (int r = 0; r < this->height; r++) {
+				for(int c = 0; c < this->width; c++) {
+					if (this->start_of_binary_map[r*this->width + c] == 0) {
+						std::cout << "255 ";
+					} else {
+						std::cout << "100 ";
+					}
+				}
+				std::cout << '\n';
+			}
+			return 1;
+		}
+
+
 		void draw_decrement_drive_x(int x0, int y0, int x1, int y1) {
 			int delta_x = abs(x1-x0); 
 			int delta_y = abs(y1-y0);  
@@ -222,8 +243,18 @@ class BinaryMap {
 		//}
 };
 
-int main() {
-	auto map = BinaryMap(20,20);
-	map.draw_general(0,0,19,8);
-	map.print();
+int main(int argc, const char * argv[]) {
+	if (argc < 5) {
+		std::cout << "Too few arguments.\n";
+		return 1;
+	}
+
+	int x0 = std::stoi(argv[1]);
+	int y0 = std::stoi(argv[2]);
+	int x1 = std::stoi(argv[3]);
+	int y1 = std::stoi(argv[4]);
+
+	auto map = BinaryMap(50,50);
+	map.draw_general(x0,y0,x1,y1);
+	map.write_to_pgm();
 }
